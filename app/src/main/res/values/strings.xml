@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">projetoTeste</string>
-    <string name="sign_out" >Logout</string>
+    <string name="sign_out">Logout</string>
     <string name="disconnect">Disconect</string>
+    <string name="title_activity_tela__inicial">Tela_Inicial</string>
 
 </resources>

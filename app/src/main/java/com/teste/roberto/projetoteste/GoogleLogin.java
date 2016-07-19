@@ -6,9 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -35,20 +33,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import javax.net.ssl.HttpsURLConnection;
-
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+public class GoogleLogin extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
@@ -91,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 .requestEmail()
                 .build();
 
-
         mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
         sharedpreferences = getSharedPreferences("idToken", Context.MODE_PRIVATE);
         mAuth = FirebaseAuth.getInstance();
@@ -125,7 +114,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             mAuth.removeAuthStateListener(mAuthListener);
         }
         finish();
-
     }
 
     // [START onactivityresult]
@@ -158,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
                 if (!task.isSuccessful()) {
                     Log.w(TAG, "signInWithCredential", task.getException());
-                    Toast.makeText(MainActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(GoogleLogin.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -249,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         }
     }
-    public void getImagem(final ImageView imgv, final Uri urlimg) {
+    private void getImagem(final ImageView imgv, final Uri urlimg) {
 
         new Thread() {
             public void run() {
@@ -274,7 +262,3 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         }.start();
     }
 }
-
-
-
-
