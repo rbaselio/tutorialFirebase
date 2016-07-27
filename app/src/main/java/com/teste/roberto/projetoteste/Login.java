@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
+
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -38,7 +40,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class GoogleLogin extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+
+
+public class Login extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
@@ -64,7 +68,7 @@ public class GoogleLogin extends AppCompatActivity implements GoogleApiClient.On
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+         setContentView(R.layout.activity_main);
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setOnClickListener(this);
@@ -74,17 +78,16 @@ public class GoogleLogin extends AppCompatActivity implements GoogleApiClient.On
         mDetailTextView = (TextView) findViewById(R.id.detail);
         imgView = (ImageView)findViewById(R.id.google_icon);
 
-
         GoogleSignInOptions gso = new GoogleSignInOptions
                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-
         mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
-        sharedpreferences = getSharedPreferences("idToken", Context.MODE_PRIVATE);
-        mAuth = FirebaseAuth.getInstance();
 
+        sharedpreferences = getSharedPreferences("idToken", Context.MODE_PRIVATE);
+
+        mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -132,8 +135,6 @@ public class GoogleLogin extends AppCompatActivity implements GoogleApiClient.On
                 updateUI(null);
                 findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             }
-
-
         }
     }
 
@@ -146,7 +147,7 @@ public class GoogleLogin extends AppCompatActivity implements GoogleApiClient.On
                 Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
                 if (!task.isSuccessful()) {
                     Log.w(TAG, "signInWithCredential", task.getException());
-                    Toast.makeText(GoogleLogin.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Login.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -174,10 +175,7 @@ public class GoogleLogin extends AppCompatActivity implements GoogleApiClient.On
     }
 
     private void revokeAccess() {
-        // Firebase sign out
         mAuth.signOut();
-
-        // Google revoke access
         Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
             @Override
             public void onResult(@NonNull Status status) {
@@ -190,8 +188,6 @@ public class GoogleLogin extends AppCompatActivity implements GoogleApiClient.On
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        // An unresolvable error has occurred and Google APIs (including Sign-In) will not
-        // be available.
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
         Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
@@ -222,7 +218,7 @@ public class GoogleLogin extends AppCompatActivity implements GoogleApiClient.On
             mStatusTextView.setText(user.getEmail());
             mDetailTextView.setText(user.getUid());
             //imgView.setImageURI(user.getPhotoUrl());
-            getImagem(imgView, user.getPhotoUrl());
+            if (user.getPhotoUrl() != null) getImagem(imgView, user.getPhotoUrl());
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.disconnect_button).setVisibility(View.VISIBLE);
 
@@ -238,7 +234,6 @@ public class GoogleLogin extends AppCompatActivity implements GoogleApiClient.On
         }
     }
     private void getImagem(final ImageView imgv, final Uri urlimg) {
-
         new Thread() {
             public void run() {
                 Bitmap img = null;

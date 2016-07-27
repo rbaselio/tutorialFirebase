@@ -3,5 +3,7 @@
     <string name="sign_out">Logout</string>
     <string name="disconnect">Disconect</string>
     <string name="title_activity_tela__inicial">Tela_Inicial</string>
+    <string name="facebook_app_id">1717492581823092</string>
+
 
 </resources>
